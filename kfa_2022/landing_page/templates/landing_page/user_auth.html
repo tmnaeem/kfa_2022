@@ -1,0 +1,64 @@
+{% extends '_general/base.html' %}
+
+{% load static %}
+
+{% block user_auth_assets %}
+    <!-- CSS Section -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/user_auth.css' %}?v=20200217"/>
+
+    <!-- JS Section -->
+    <script type="text/javascript" src="{% static 'js/user_auth.js' %}?v=20220508"></script>
+{% endblock %}
+ 
+{% block content %}
+    <section id="user_auth_main" role="main" class="container-fluid">
+        <div class="row center-screen">
+            <div class="column">
+                <div class="row">
+                    <div class="col-sm-9 col-md-7 col-lg-3 mx-auto">
+                        <div class="logo-body">
+                            <img id="kfa-logo" id="" src="{% static 'img/kfa_logo.png' %}">
+                        </div>
+                        <div class="card border-0 shadow rounded-3 my-5">
+                            <div class="card-body p-4 p-sm-5">
+                                <h2 class="card-title mb-4 fw-normal text-uppercase" style="text-align: left;">Log Masuk</h2>
+                                <form>
+                                    <div class="form-floating mb-4 fw-lighter">
+                                        <input type="username" class="form-control" id="floatingInput" v-model="username" placeholder="name@example.com">
+                                        <label for="floatingInput">Username</label>
+                                    </div>
+                                    <div class="form-floating mb-5 fw-lighter">
+                                        <input type="password" class="form-control" id="floatingPassword" v-model="password" placeholder="Password">
+                                        <label for="floatingPassword">Password</label>
+                                    </div>
+                                    <div class="d-grid gap-2 d-sm-block">
+                                        <button class="btn btn-success btn-login text-uppercase auth-box-button" @click="triggerUserLogin" type="button">Log Masuk</button>
+                                        <button class="btn btn-secondary btn-login text-uppercase auth-box-button" type="button">Daftar</button>
+                                    </div>
+                                    
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+            </div>
+            <div class="column d-lg-none d-xl-block">
+                <div class="model-image-box">
+                    <img id="model-image" id="" src="{% static 'img/login_box_model_sec.png' %}">
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block user_auth_script %}
+    
+    <script>
+        $(document).ready( function() {
+            // const data = "{{ data | safe }}".replace(/'/g, '"');
+            const csrfToken = '{{ csrf_token }}';
+            const app = new UserAuth()
+            app.init(csrfToken)
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends '_general/base.html' %}
+
+{% load static %}
+
+{% block user_auth_assets %}
+    <!-- CSS Section -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/landing_page.css' %}?v=20200217"/>
+
+    <!-- JS Section -->
+    <script type="text/javascript" src="{% static 'js/landing_page.js' %}?v=20220508"></script>
+{% endblock %}
+ 
+{% block content %}
+    <main id="landing_page_main" role="main" class="container-fluid">
+    </main>
+{% endblock %}
+
+{% block user_auth_script %}
+    
+    <script>
+        $(document).ready( function() {
+            // const data = "{{ data | safe }}".replace(/'/g, '"');
+            const csrfToken = '{{ csrf_token }}';
+            const app = new LandingPage()
+            app.init(csrfToken)
+        })
+    </script>
+{% endblock %}

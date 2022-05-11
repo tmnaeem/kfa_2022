@@ -1,0 +1,47 @@
+#model-image {
+    width: 40%;
+    bottom: 0%;
+    left: 0%;
+    position:absolute;
+    /* bottom:0%; */
+}
+
+#kfa-logo {
+    width: 10em;
+    position: absolute;
+    bottom: 90%;
+    margin: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.logo-body{
+    overflow: hidden;
+    margin-right: auto;
+    width: 50%;
+}
+
+.btn-login {
+    font-size: 0.9rem;
+    letter-spacing: 0.05rem;
+    padding: 0.75rem 1rem;
+  }
+
+.center-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+  }
+
+.auth-box-button {
+    width: 150px !important;
+}
+
+a, a:hover, a:focus, a:active {
+    text-decoration: none;
+    color: inherit;
+}
+

@@ -1,0 +1,66 @@
+{% extends "_general/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block user_auth_assets %}
+    <!-- CSS Section -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/user_auth.css' %}?v=20200217"/>
+
+    <!-- JS Section -->
+    <script type="text/javascript" src="{% static 'js/user_auth.js' %}?v=20220508"></script>
+{% endblock %}
+
+{% block content %}
+<section id="user_auth_main" role="main" class="container-fluid">
+  <div class="row center-screen">
+      <div class="column">
+          <div class="row">
+              <div class="col-sm-9 col-md-7 col-lg-3 mx-auto">
+                  <img id="model-image" id="" src="{% static 'img/login_box_model_sec.png' %}">
+                  <div class="card border-0 shadow rounded-3 my-5">
+                      <img id="kfa-logo" class="mb-3" src="{% static 'img/kfa_logo.png' %}">
+                      <div class="card-body p-4 p-sm-5">
+                        <h2 class="card-title mb-4 fw-normal text-uppercase" style="text-align: left;">Log Masuk</h2>
+                        <form class="login" method="POST" action="{% url 'account_login' %}">
+                            {% csrf_token %}
+                            <div class="form-floating mb-4 fw-lighter">
+                                {{ form.login }}
+                                <label for="id_login">Username</label>
+                            </div>
+                            <div class="form-floating mb-3 fw-lighter">
+                                {{ form.password }}
+                                <label for="id_password">Password</label>
+                            </div>
+                            <div class="form-check mb-5 fw-lighter">
+                              {{ form.remember }}
+                              <label class="form-check-label" for="id_remember">
+                                Remember Me?
+                              </label>
+                            </div>
+                            <!-- {{ form.as_p }} -->
+                            {% if redirect_field_value %}
+                              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                            {% endif %}
+                            <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+                            <button class="primaryAction" type="submit">{% trans "Sign In" %}</button>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+            </div>
+      </div>
+  </div>
+</section>
+{% endblock %}
+{% block user_auth_script %}
+    <script>
+        $(document).ready( function() {
+            // const data = "{{ data | safe }}".replace(/'/g, '"');
+            const signupUrl = '{{ signup_url }}';
+            const app = new UserAuth(signupUrl)
+            app.init()
+        })
+    </script>
+{% endblock %}
+
+                  

@@ -2,36 +2,52 @@
 
 <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
     <div class="container-fluid">
+        {% if location == 'home' %}
         <div id="landing_page_logo_box">
             <img id="landing_page_logo" src="{% static 'img/kfa_logo.png' %}">
         </div>
+        {% else %}
+        <h2 class="fw-lighter text-uppercase" style="color: white;">{{ title }}</h2>
+        {% endif %}
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Laporan Perlawanan</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Kejohanan
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Hubungi Kami</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'account_login' %}">Log Masuk</a>
-                </li>
+            <ul class="navbar-nav mr-auto mb-2 mb-lg-0" id="universal-navbar">
+                {% if location == 'home' %}
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#" value="laporan">Laporan Perlawanan</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Kejohanan
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Hubungi Kami</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_login' %}">Log Masuk</a>
+                    </li>
+                {% elif location != 'home' %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if location == 'team_config' %}active{% endif %}" aria-current="page" href="{% url 'team_config_page' %}" value="Konfigurasi">Konfigurasi Pasukan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if location == 'match_config' %}active{% endif %}" href="#" value="Profil">Konfigurasi Perlawanan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_logout' %}">Log Keluar</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>

@@ -10,7 +10,7 @@ function LandingPage(){
             methods: {
             },
         })
-        app.mount("#landing_page_main")
+        app.mount("#landing-page-main")
     }
 }
 

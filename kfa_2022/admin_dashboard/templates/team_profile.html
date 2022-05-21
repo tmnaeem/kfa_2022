@@ -1,0 +1,88 @@
+{% extends '_general/base.html' %}
+
+{% load static %}
+{% static "" as baseUrl %}
+
+{% block team_profile_assets %}
+    <!-- CSS Section -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/team_profile.css' %}?v=20200217"/>
+
+    <!-- JS Section -->
+    <script type="text/javascript" src="{% static 'js/team_profile.js' %}?v=20220508"></script>
+{% endblock %}
+ 
+{% block content %}
+    <section id="team-profile-main" role="main" class="container-fluid">
+        <div class="row p-5">
+            <div class="col">  
+                <div class="d-flex justify-content-center">
+                    <div class="p-2"><img id="team_profile_logo" src="{{ MEDIA }}/{{ team_data.LOGO_PATH }}"></div>
+                    <div class="p-2 text-uppercase">
+                        <h1 id="team-name-title"><b>{{ team_data.TEAM }}</b></h1>
+                        <h3>Piala Menteri Besar Kedah</h3>
+                    </div> 
+                </div> 
+            </div>
+        </div>
+        <div class="row pt-5 bg-white">
+            <!-- <hr class="mt-5">  -->
+            <div class="col align-self-center">   
+                <div class="row">
+                    <div class='col'>
+                        <div class="d-flex justify-content-center mb-3">
+                            <div class="p-2 pt-4 bd-highlight text-uppercase">
+                                <h1>Pegawai Pasukan</h1>
+                            </div> 
+                        </div> 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='col'>
+                        <div class="d-flex justify-content-center mb-3" style="gap: 20px;" id="list-team">
+                            <div class="card" style="width: 18rem;">
+                                <img src="{% static team_list.0.PROFILE_PIC_PATH %}" class="card-img-top">
+                                <div class="card-body">
+                                    <ul v-for="team in teamList" class="list-group list-group-flush">
+                                        <li class="list-group-item">[[ team.NAME ]]</li>
+                                        <li class="list-group-item">[[ team.POSITION ]]</li>
+                                        <li class="list-group-item">[[ team.IDENTITY_NUM ]]</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card" style="width: 18rem;">
+                                <img src="{% static 'img/teams/kfa/123456789231/profile.jpg' %}" class="card-img-top">
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">Ismail Jo</li>
+                                        <li class="list-group-item">Programmer</li>
+                                        <li class="list-group-item">123456789231</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class='col-4 mt-3 mb-3 d-flex justify-content-center'>
+                        <button type="button" class="btn btn-info" @click="generatePdf">Jana PDF</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block team_profile_script %}
+    
+    <script>
+        
+        let team_list = "{{ team_list | safe }}".replace(/'/g, '"').replace(/\//g, "/");
+        let team_data = "{{ team_data | safe }}".replace(/'/g, '"').replace(/\\/g, "/");
+        console.log(JSON.parse(team_data), team_list)
+        $(document).ready( function() {
+            const app = new TeamProfile(JSON.parse(team_list), JSON.parse(team_data))
+            app.init()
+        })
+    </script>
+{% endblock %}

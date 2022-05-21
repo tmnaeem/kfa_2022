@@ -17,6 +17,9 @@
         <!-- CSS Section -->
         <!-- third-party -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/r-2.3.0/sc-2.0.6/sl-1.4.0/datatables.min.css"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@0.5.5/dist/simple-notify.min.css" />
         
         <!-- ours assets -->
         <link rel="stylesheet" href="">
@@ -28,18 +31,24 @@
         <!-- third-party -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3"></script>
-        <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/uuid@latest/dist/umd/uuidv4.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/r-2.3.0/sc-2.0.6/sl-1.4.0/datatables.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-notify@0.5.5/dist/simple-notify.min.js"></script>
 
         <!-- ours assets -->
 
         <!-- apps assets -->
         {% block user_auth_assets %}{% endblock %}
+        {% block team_config_assets %}{% endblock %}
+        {% block team_profile_assets %}{% endblock %}
     </head>
     <body>
         <main id="django-base" class="wrapper">
              <!-- Include navbar -->
-            {% if location == 'home' %}
+            {% if location in '"home", "team_config", "team_profile"' %}
                 {% include '_general/_navbar.html' %}
             {% endif %}
             
@@ -47,5 +56,7 @@
         </main>
        
         {% block user_auth_script %}{% endblock %}
+        {% block team_config_script %}{% endblock %}
+        {% block team_profile_script %}{% endblock %}
     </body>
 </html>

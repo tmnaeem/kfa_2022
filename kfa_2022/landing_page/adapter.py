@@ -5,6 +5,6 @@ class MyAccountAdapter(DefaultAccountAdapter):
 
     def get_login_redirect_url(self, request):
         if request.user.is_staff:
-            return "/landing_page"
+            return "/team_config"
         else:
             return "/landing_page"

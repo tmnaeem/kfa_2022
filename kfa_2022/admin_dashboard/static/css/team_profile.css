@@ -1,0 +1,10 @@
+hr {
+    color: #EEC407;
+    position: absolute;
+    width: 80%;  
+    height: 50px;
+}
+
+#team-name-title {
+    font-size: 130px;
+}

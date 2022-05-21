@@ -38,7 +38,8 @@ DEFAULT_APPS = [
 OUR_APPS = [
     'client_dashboard',
     'admin_dashboard',
-    'landing_page'
+    'landing_page',
+    'api'
 ]
 
 THIRD_PARTY_APPS = [
@@ -46,6 +47,7 @@ THIRD_PARTY_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'fontawesomefree'
 ]
 
 INSTALLED_APPS = DEFAULT_APPS + OUR_APPS + THIRD_PARTY_APPS

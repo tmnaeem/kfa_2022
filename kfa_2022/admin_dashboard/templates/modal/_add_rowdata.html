@@ -1,0 +1,40 @@
+<!-- Modal -->
+<div class="modal fade" id="team-config-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Tambah Pasukan</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal"></button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="mb-3 row">
+                    <label for="inputTeam" class="col-sm-2 col-form-label">Nama Pasukan</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputTeam" v-model="tempTeamName" >
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="formFile" class="col-sm-2 col-form-label">Logo Pasukan</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="file" id="formFile" @change="changeFile">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-info" role="alert">
+                            <b>Pendaftar ID</b> akan dijanakan secara automatik. <br>
+                            <b>Status Pendaftar</b> akan berubah selepas PIC pasukan berjaya didaftar.
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeModal">Close</button>
+          <button v-if="!onEditTeamConfig" type="button" class="btn btn-primary" @click="addRowToTable" :disabled="!tempTeamName">Upload</button>
+          <button v-else type="button" class="btn btn-primary" @click="updateRowToTable(false, false, false)" :disabled="!tempTeamName">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>

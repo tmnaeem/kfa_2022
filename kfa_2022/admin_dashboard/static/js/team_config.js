@@ -84,6 +84,7 @@ function TeamConfig(rowData){
             },
             data: function(){
                 return {
+                    pageLocation: 'team',
                     teamDt: null,
                     columns: [
                         { data: 'TEAM', title: 'Pasukan' },
@@ -111,10 +112,20 @@ function TeamConfig(rowData){
                     selectionActive: false,
                     onEditTeamConfig: false,
                     deletedRows: [],
-                    teamSelection: null
+                    teamSelection: null,
+                    errorTeamName: false
                 }
             },
-            watch: {},
+            watch: {
+                tempTeamName: function(val){
+                    if(this.teamDt.columns(0).data().toArray()[0].includes(val)){
+                        if(this.onEditTeamConfig && val == this.teamDt.rows( { selected: true } ).data()[0].TEAM ) return 
+                        this.errorTeamName = true
+                    }else{
+                        this.errorTeamName = false
+                    } 
+                },
+            },
             methods: {
                 onSelectRowTable: function(e, dt, type, indexes){
                     this.selectionActive = indexes[0]
@@ -164,7 +175,7 @@ function TeamConfig(rowData){
                 }, 
                 deleteRowSelected: function(){
                     const selRowData = this.teamDt.rows( { selected: true } ).data()[0]
-                    this.deletedRows.push(selRowData.SECRET_KEY)
+                    if(selRowData.saveStatus == this.saveStatusDict.saved) this.deletedRows.push(selRowData.SECRET_KEY)
                     this.teamDt.rows( '.selected' ).remove().draw();
                 },
                 addRowToTable: function(){
@@ -220,7 +231,7 @@ function TeamConfig(rowData){
                         
                         axios({
                             method: 'post',
-                            url: '/api/add_teams/',
+                            url: '/api/edit_teams/',
                             headers: {"X-CSRFToken": csrfToken, 'Content-Type': 'multipart/form-data'},
                             data: formData
                         }).then(response => {
@@ -291,8 +302,3 @@ function TeamConfig(rowData){
         app.mount("#team-config-main")
     }
 }
-
-function navigateToTeamPage(){
-    console.log('sfd')
-}
-

@@ -42,7 +42,7 @@
                         <a class="nav-link {% if location == 'team_config' %}active{% endif %}" aria-current="page" href="{% url 'team_config_page' %}" value="Konfigurasi">Konfigurasi Pasukan</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if location == 'match_config' %}active{% endif %}" href="#" value="Profil">Konfigurasi Perlawanan</a>
+                        <a class="nav-link {% if location == 'tournament_config' %}active{% endif %}" href="{% url 'tournament_config_page' %}" value="Konfigurasi">Konfigurasi Perlawanan</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'account_logout' %}">Log Keluar</a>

@@ -1,0 +1,83 @@
+{% extends '_general/base.html' %}
+
+{% load static %}
+
+{% block tournament_config_assets %}
+    <!-- CSS Section -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/tournament_config.css' %}?v=20200217"/>
+
+    <!-- JS Section -->
+    <script type="text/javascript" src="{% static 'js/tournament_config.js' %}?v=20220508"></script>
+{% endblock %}
+ 
+{% block content %}
+    <section id="tournament-config-main" role="main" class="container-fluid">
+        <div class="row px-5 pt-5 pb-5">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <div class="">Senarai Kejohanan</div>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#tournament-config-modal">
+                                    <i class="fa-solid fa-circle-plus"></i>
+                                </button>
+                                <button type="button" class="btn btn-default" @click="saveTournamentConfig">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="tournament-config-placeholder" class="mb-3">
+                            <table id="tournament-config-table" class="display compact hover"></table>
+                        </div>
+                        <div class="btn-group float-end" role="group" aria-label="Basic mixed styles example">
+                            <button type="button" class="btn btn-danger" :disabled="selectionActive === false" @click="deleteRowSelected(whichTable.tournament)">Delete</button>
+                            <button type="button" class="btn btn-secondary" :disabled="selectionActive === false" @click="editRowToTable(whichTable.tournament)">Edit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="selectionActive !== false" class="row px-5">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <div class="">Senarai Perlawanan</div>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-default" @click="navigateToMatchPage(true)">
+                                    <i class="fa-solid fa-circle-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="match-config-placeholder" class="mb-3">
+                            <table id="match-config-table" class="display compact hover"></table>
+                        </div>
+                        <div class="btn-group float-end" role="group" aria-label="Basic mixed styles example">
+                            <button type="button" class="btn btn-danger" :disabled="matchSelectionActive === false" @click="deleteRowSelected(whichTable.match)">Delete</button>
+                            <button type="button" class="btn btn-secondary" :disabled="matchSelectionActive === false" @click="navigateToMatchPage(false)">Edit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'modal/_add_rowdata.html' %}
+    </section>
+{% endblock %}
+
+{% block tournament_config_script %}
+    
+    <script>
+        let list_tournament = "{{ list_tournament | safe }}".replace(/'/g, '"').replace(/\\/g, "/");
+        console.log(list_tournament)
+        const csrfToken = '{{ csrf_token }}';
+        $(document).ready( function() {
+            const app = new TournamentConfig(JSON.parse(list_tournament))
+            app.init(csrfToken)
+        })
+    </script>
+{% endblock %}

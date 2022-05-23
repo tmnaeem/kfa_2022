@@ -12,8 +12,8 @@ class AvailableTournaments(models.Model):
     PID = models.AutoField(db_column='PID', primary_key=True) 
     TOURNAMENT_ID = models.UUIDField(db_column='TOURNAMENT_ID', unique=True)
     TOURNAMENT_TITLE = models.CharField(db_column='TOURNAMENT_TITLE', max_length=255)
-    START_TIME = models.DateField(db_column='START_TIME')
-    END_TIME = models.DateField(db_column='END_TIME')
+    START_TIME = models.DateField(db_column='START_TIME', blank=True, null=True)
+    END_TIME = models.DateField(db_column='END_TIME', blank=True, null=True)
     POSTER_PATH = models.TextField(db_column='POSTER_PATH', blank=True, null=True)
 
 class MatchInformations(models.Model):

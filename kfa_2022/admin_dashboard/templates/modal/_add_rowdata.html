@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div class="modal fade" id="team-config-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+<div v-if="pageLocation == 'team'" class="modal fade" id="team-config-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
@@ -11,7 +11,7 @@
                 <div class="mb-3 row">
                     <label for="inputTeam" class="col-sm-2 col-form-label">Nama Pasukan</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputTeam" v-model="tempTeamName" >
+                        <input type="text" class="form-control" :class="{ 'is-invalid': errorTeamName || !tempTeamName, 'is-valid': tempTeamName }" id="inputTeam" v-model="tempTeamName" >
                     </div>
                 </div>
                 <div class="mb-3 row">
@@ -32,9 +32,47 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeModal">Close</button>
-          <button v-if="!onEditTeamConfig" type="button" class="btn btn-primary" @click="addRowToTable" :disabled="!tempTeamName">Upload</button>
-          <button v-else type="button" class="btn btn-primary" @click="updateRowToTable(false, false, false)" :disabled="!tempTeamName">Update</button>
+          <button v-if="!onEditTeamConfig" type="button" class="btn btn-primary" @click="addRowToTable" :disabled="!tempTeamName || errorTeamName">Upload</button>
+          <button v-else type="button" class="btn btn-primary" @click="updateRowToTable(false, false, false)" :disabled="!tempTeamName || errorTeamName">Update</button>
         </div>
       </div>
     </div>
   </div>
+
+<div v-if="pageLocation == 'tournament'" class="modal fade" id="tournament-config-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Kejohanan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3 row">
+                        <label for="inputTournament" class="col-sm-2 col-form-label" required>Nama Kejohanan</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" :class="{ 'is-invalid': errorTitleTournament || !tempTournamentName, 'is-valid': tempTournamentName }" id="inputTournament" v-model="tempTournamentName" >
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="formFile" class="col-sm-2 col-form-label">Poster Kejohanan</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="file" id="formFile" @change="changeFile">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="timeFrame" class="col-sm-2 col-form-label">Tarikh</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" name="datefilter" id="timeFrame" v-model="selectedTimeFrame" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeModal">Close</button>
+                <button v-if="!onEditTournamentConfig" type="button" class="btn btn-primary" @click="addRowToTable" :disabled="!tempTournamentName || errorTitleTournament">Upload</button>
+                <button v-else type="button" class="btn btn-primary" @click="updateRowToTable(false, false, false)" :disabled="!tempTournamentName || errorTitleTournament">Update</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,16 +1,18 @@
-from turtle import settiltangle
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import TeamItemSerializer
+from .serializers import TeamItemSerializer, TournamentItemSerializer
 import json
 import os
 import uuid
 from django.db import transaction
-from admin_dashboard.models import AvailableTeams
+from admin_dashboard.models import AvailableTeams, AvailableTournaments, MatchInformations, TeamMatchGeneralInformation
 from api import utils
 import shutil
+import datetime
+from django.utils.dateparse import parse_date
+# TODO : separate delete and update
 
 class TeamItemViews(APIView):
     def post(self, request):
@@ -41,8 +43,9 @@ class TeamItemViews(APIView):
             if data['TEAM'] in request.data:
                 image_file = request.data[data['TEAM']]
                 if image_file: 
-                    path = utils.save_image_to_media(data, image_file)
-                    new_path_image = os.path.join(path, image_file.name)
+                    path = os.path.join(settings.MEDIA_ROOT, 'teams', data['SECRET_KEY'], data['TEAM'], 'logo')
+                    utils.save_image_to_media(image_file, path)
+                    new_path_image = os.path.join('media', 'teams', data['SECRET_KEY'], data['TEAM'], 'logo', image_file.name)
             else:
                 new_path_image = data['LOGO_PATH']
                 
@@ -84,3 +87,92 @@ class TeamItemViews(APIView):
 
             new_response = new_response + data_update
         return Response({"status": "success", "data": new_response}, status=status.HTTP_200_OK)
+
+class TournamentsItemViews(APIView):
+    def post(self, request):
+        teams_data = json.loads(request.data['tournaments_data'])
+        deleted_teams_data = json.loads(request.data['deleted_tournaments_data'])
+        
+        # delete teams first before proceed on saving
+        if len(deleted_teams_data) != 0:
+            try:
+                with transaction.atomic():
+                    target_tournaments = AvailableTournaments.objects.filter(TOURNAMENT_ID__in=deleted_teams_data)
+                    
+                    for tournament in target_tournaments:
+                        if tournament.POSTER_PATH : 
+                            path = os.path.join(settings.MEDIA_ROOT, 'tournaments', str(tournament.TOURNAMENT_ID))
+                            shutil.rmtree(path)
+
+                    target_tournaments.delete()
+            except Exception as e:
+                return Response({"status": "error", "data": e}, status=status.HTTP_400_BAD_REQUEST)
+
+        data_create = []
+        data_update = []
+        for data in teams_data:
+            # preparing file saving if any
+            new_path_image = ''
+            if data['TOURNAMENT_ID'] in request.data:
+                image_file = request.data[data['TOURNAMENT_ID']]
+                if image_file: 
+                    path = os.path.join(settings.MEDIA_ROOT, 'tournaments', data['TOURNAMENT_ID'], 'poster')
+                    utils.save_image_to_media(image_file, path)
+                    new_path_image = os.path.join('media', 'tournaments', data['TOURNAMENT_ID'], 'poster', image_file.name)
+            else:
+                new_path_image = data['POSTER_PATH']
+                
+            new_dict = {}
+            new_dict['TOURNAMENT_TITLE'] = data['TOURNAMENT_TITLE']
+            new_dict['TOURNAMENT_ID'] = data['TOURNAMENT_ID']
+            new_dict['START_TIME'] = datetime.datetime.strptime(data['START_TIME'], "%Y-%m-%d").date() if data['START_TIME'] else None
+            new_dict['END_TIME'] = datetime.datetime.strptime(data['END_TIME'], "%Y-%m-%d").date() if data['END_TIME'] else None
+            new_dict['POSTER_PATH'] =  new_path_image
+            print(new_dict)
+            data_update.append(new_dict) if AvailableTournaments.objects.filter(TOURNAMENT_ID=data['TOURNAMENT_ID']).exists() else data_create.append(new_dict)
+            
+        new_response = []
+        if len(data_create) != 0:
+            serializer = TournamentItemSerializer(data=data_create, many=True)
+            if serializer.is_valid():
+                serializer.save()
+                new_response = json.loads(json.dumps(serializer.data)) 
+            else:
+                return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        if len(data_update) != 0:
+            try:
+                with transaction.atomic():
+                    tournament_ids = [data['TOURNAMENT_ID'] for data in data_update]
+                    curr_tournament = AvailableTournaments.objects.filter(TOURNAMENT_ID__in=tournament_ids)  
+
+                    for curr_data, new_data in zip(curr_tournament, data_update):
+                        curr_data.TOURNAMENT_TITLE = new_data['TOURNAMENT_TITLE']
+                        curr_data.POSTER_PATH = new_data['POSTER_PATH']
+                        curr_data.START_TIME = new_data['START_TIME']
+                        curr_data.END_TIME = new_data['END_TIME']
+
+                    AvailableTournaments.objects.bulk_update(curr_tournament, fields=['TOURNAMENT_TITLE', 'POSTER_PATH', 'START_TIME', 'END_TIME']) 
+            except Exception as e:
+                return Response({"status": "error", "data": e}, status=status.HTTP_400_BAD_REQUEST)
+
+            new_response = new_response + data_update
+        return Response({"status": "success", "data": new_response}, status=status.HTTP_200_OK)
+
+class MatchItemViews(APIView):
+    def get(self, request):
+        tournament_pid = request.GET.get('tournament_pid', None)
+        match_data = list(MatchInformations.objects.filter(TOURNAMENT_ID=AvailableTournaments.objects.get(TOURNAMENT_ID=tournament_pid)).values())
+
+        for match in match_data:
+            match_teams = list(TeamMatchGeneralInformation.objects.filter(MATCH_ID=MatchInformations.objects.get(MATCH_ID=match['MATCH_ID'])).values('TEAM_ID__TEAM', 'IS_AWAY'))   
+            for team in match_teams:
+                if team['IS_AWAY']:
+                    home_team = team['TEAM_ID__TEAM'] 
+                else:
+                    away_team = team['TEAM_ID__TEAM'] 
+            
+            match['vs'] = f'{home_team} VS {away_team}'
+    
+        return Response({"status": "success", "data": match_data}, status=status.HTTP_200_OK)
+            

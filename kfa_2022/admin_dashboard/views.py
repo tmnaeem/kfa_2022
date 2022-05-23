@@ -37,3 +37,27 @@ def team_profile_page(request, team_name):
         'team_list' : all_player
     }
     return render(request, 'team_profile.html', context)
+
+def tournament_config_page(request):
+    list_tournament = list(AvailableTournaments.objects.values())
+    for tournament in list_tournament:
+        tournament['TOURNAMENT_ID'] = str(tournament['TOURNAMENT_ID'])
+        tournament['START_TIME'] = str(tournament['START_TIME'])
+        tournament['END_TIME'] = str(tournament['END_TIME'])
+        
+    context = {
+        'title' : 'Konfigurasi Kejohanan',
+        'location' : 'tournament_config',
+        'list_tournament' : list_tournament,
+    }
+    return render(request, 'tournament_config.html', context)
+
+def match_report_page(request, tournament_title, match_id):
+    
+    context = {
+        'title' : 'Konfigurasi Perlawanan',
+        'status' : 'new_match' if match_id == 'new' else match_id,
+        'tournament_title' : tournament_title
+    }
+
+    return render(request, 'match_config.html', context)

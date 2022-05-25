@@ -13,5 +13,5 @@ class TeamRegistered(models.Model):
     DESIGNATION = models.IntegerField(db_column='DESIGNATION', choices=TeamDesignationChoices.choices)
     POSITION = models.CharField(db_column='POSITION', blank=True, null=True, max_length=20) # TODO: Convert to selection
     JERSEY_NUM = models.IntegerField(db_column='JERSEY_NUM') 
-    REGISTERED_BY = models.UUIDField(db_column='REGISTERED_BY')
+    REGISTERED_BY = models.UUIDField(db_column='REGISTERED_BY', unique=True, null=True, blank=True)
     LICENSE_KEY = models.TextField(db_column='LICENSE_KEY', unique=True, null=True, blank=True)

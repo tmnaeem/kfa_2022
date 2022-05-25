@@ -23,7 +23,7 @@ function TeamProfile(teamListServer, teamDataServer){
                     const element = document.getElementById('list-team');
                     // Choose the element and save the PDF for our user.
                     html2pdf().from(element).save();
-                }
+                },
             },
         })
         app.mount("#team-profile-main")

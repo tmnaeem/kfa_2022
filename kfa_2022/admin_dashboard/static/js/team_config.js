@@ -178,7 +178,7 @@ function TeamConfig(rowData){
                     if(selRowData.saveStatus == this.saveStatusDict.saved) this.deletedRows.push(selRowData.SECRET_KEY)
                     this.teamDt.rows( '.selected' ).remove().draw();
                 },
-                addRowToTable: function(){
+                addRowToTable: function(playersData){
                     const new_uuid = uuidv4()
                     const newTeamName = this.tempTeamName
                     const newTeamLogo = this.tempFile
@@ -191,7 +191,8 @@ function TeamConfig(rowData){
                         TEAM_ID: '',
                         logoFile: newTeamLogo,
                         logoStats: this.tempFile ? this.logoStatsDict.pending : this.logoStatsDict.notExist,
-                        saveStatus: this.saveStatusDict.notSaved
+                        saveStatus: this.saveStatusDict.notSaved,
+                        playersData: playersData || []
                     }
                     this.teamDt.row.add(newData).draw()
                 },
@@ -210,6 +211,7 @@ function TeamConfig(rowData){
                 },
                 triggerDocUploadWin: function(){
                     $('#doc-upload').trigger('click'); 
+                    document.getElementById('doc-upload').value= null;
                 },
                 saveTeamsConfig: function(){
                     let self = this;
@@ -237,16 +239,14 @@ function TeamConfig(rowData){
                         }).then(response => {
                             this.toastMessage('success', 'Selesai Dimuat naik', 'Data Pasukan berjaya di muat naik ke pelayan')
                             const newRowData = response.data.data
-                            console.log(newRowData)
+                            
                             let self = this
                             newRowData.forEach((data)=>{
-                                console.log(data)
                                 const rowIdx = self.teamDt.rows().data().toArray().findIndex((tbData)=> tbData.SECRET_KEY == data.SECRET_KEY)
                                 self.updateRowToTable(rowIdx, data, true)
                             })
                         })
                         .catch(err => {
-                            console.log(err)
                             this.toastMessage('error', 'Tidak Berjaya Dimuat Naik', 'Data Pasukan gagal dimuat naik ke pelayan')
                         })
                     }
@@ -255,27 +255,29 @@ function TeamConfig(rowData){
                     const files = e.target.files
                     const fileLength = e.target.files.length
                     if(!files && fileLength != 1) return
-
-                    let reader = new FileReader(); // no arguments
-                    let self = this
-
-                    reader.readAsText(files[0]);
-
-                    reader.onload = function() {
-                        let data = reader.result.split(/\r?\n/)
-                        data.pop()
-
-                        data.slice(1).forEach((team)=>{
-                            self.tempTeamName = team
-                            self.tempFile= null
-                            self.addRowToTable()
+                    
+                    let self = this;
+                    var formData = new FormData();
+                    formData.append("teams_data", files[0]);
+                    axios({
+                        method: 'post',
+                        url: '/api/extract_data_from_file/',
+                        headers: {"X-CSRFToken": csrfToken, 'Content-Type': 'multipart/form-data'},
+                        data: formData
+                    }).then(response => {
+                        this.toastMessage('success', 'Selesai memproses data kumpulan', 'Data Pasukan berjaya di proses untuk dinilai')
+                        const newRowData = response.data.data
+                        const teamsFromDoc = Object.keys(newRowData)
+                        teamsFromDoc.forEach((team)=>{
+                            if(!self.teamDt.columns(0).data().toArray()[0].includes(team)){
+                                self.tempTeamName = team
+                                self.addRowToTable(newRowData[team])
+                            }
                         })
-                        
-                    };
-
-                    reader.onerror = function() {
-                        console.log(reader.error);
-                    };
+                    })
+                    .catch(err => {
+                        this.toastMessage('error', 'Gagal memproses data kumpulan', 'Data Pasukan berjaya di proses untuk dinilai')
+                    })
                 },
 
                 toastMessage: function(status, title, message){

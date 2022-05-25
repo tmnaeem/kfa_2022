@@ -32,7 +32,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeModal">Close</button>
-          <button v-if="!onEditTeamConfig" type="button" class="btn btn-primary" @click="addRowToTable" :disabled="!tempTeamName || errorTeamName">Upload</button>
+          <button v-if="!onEditTeamConfig" type="button" class="btn btn-primary" @click="addRowToTable(false)" :disabled="!tempTeamName || errorTeamName">Upload</button>
           <button v-else type="button" class="btn btn-primary" @click="updateRowToTable(false, false, false)" :disabled="!tempTeamName || errorTeamName">Update</button>
         </div>
       </div>

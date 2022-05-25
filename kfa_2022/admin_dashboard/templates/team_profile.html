@@ -31,31 +31,21 @@
                     <div class='col'>
                         <div class="d-flex justify-content-center mb-3">
                             <div class="p-2 pt-4 bd-highlight text-uppercase">
-                                <h1>Pegawai Pasukan</h1>
+                                <h1>Pemain Pasukan</h1>
                             </div> 
                         </div> 
                     </div>
                 </div>
                 <div class="row">
                     <div class='col'>
-                        <div class="d-flex justify-content-center mb-3" style="gap: 20px;" id="list-team">
-                            <div class="card" style="width: 18rem;">
-                                <img src="{% static team_list.0.PROFILE_PIC_PATH %}" class="card-img-top">
+                        <div class="d-flex align-content-around flex-wrap" style="gap: 20px;" id="list-team">
+                            <div v-for="team in teamList" class="card" style="width: 18rem;">
+                                <img src="{% static team.PROFILE_PIC_PATH %}" onerror="this.src='https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg'" class="card-img-top">
                                 <div class="card-body">
-                                    <ul v-for="team in teamList" class="list-group list-group-flush">
+                                    <ul class="list-group list-group-flush">
                                         <li class="list-group-item">[[ team.NAME ]]</li>
                                         <li class="list-group-item">[[ team.POSITION ]]</li>
                                         <li class="list-group-item">[[ team.IDENTITY_NUM ]]</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="card" style="width: 18rem;">
-                                <img src="{% static 'img/teams/kfa/123456789231/profile.jpg' %}" class="card-img-top">
-                                <div class="card-body">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Ismail Jo</li>
-                                        <li class="list-group-item">Programmer</li>
-                                        <li class="list-group-item">123456789231</li>
                                     </ul>
                                 </div>
                             </div>
@@ -79,7 +69,7 @@
         
         let team_list = "{{ team_list | safe }}".replace(/'/g, '"').replace(/\\/g, "/");
         let team_data = "{{ team_data | safe }}".replace(/'/g, '"').replace(/\\/g, "/");
-        console.log(JSON.parse(team_data), team_list)
+        console.log(JSON.parse(team_list))
         $(document).ready( function() {
             const app = new TeamProfile(JSON.parse(team_list), JSON.parse(team_data))
             app.init()

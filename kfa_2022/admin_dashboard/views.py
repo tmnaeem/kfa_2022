@@ -54,10 +54,18 @@ def tournament_config_page(request):
 
 def match_report_page(request, tournament_title, match_id):
     
+    server_data = {}
+    if match_id == 'new_match' :
+        all_match = list(MatchInformations.objects.all().values())
+        server_data['MATCH_NUM'] = len(all_match) + 1
+        print(server_data, all_match)
+
     context = {
         'title' : 'Konfigurasi Perlawanan',
+        'location' : 'match_config',
         'status' : 'new_match' if match_id == 'new' else match_id,
-        'tournament_title' : tournament_title
+        'tournament_title' : tournament_title,
+        'server_data' : server_data
     }
 
     return render(request, 'match_config.html', context)

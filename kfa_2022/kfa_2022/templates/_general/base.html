@@ -48,11 +48,12 @@
         {% block team_config_assets %}{% endblock %}
         {% block team_profile_assets %}{% endblock %}
         {% block tournament_config_assets %}{% endblock %}
+        {% block match_config_assets %}{% endblock %}
     </head>
     <body>
         <main id="django-base" class="wrapper">
              <!-- Include navbar -->
-            {% if location in '"home", "team_config", "team_profile", "tournament_config"' %}
+            {% if location in '"home", "team_config", "team_profile", "tournament_config", "match_config"' %}
                 {% include '_general/_navbar.html' %}
             {% endif %}
             
@@ -63,5 +64,6 @@
         {% block team_config_script %}{% endblock %}
         {% block team_profile_script %}{% endblock %}
         {% block tournament_config_script %}{% endblock %}
+        {% block match_config_script %}{% endblock %}
     </body>
 </html>

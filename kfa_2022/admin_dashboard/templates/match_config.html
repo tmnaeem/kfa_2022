@@ -12,76 +12,104 @@
  
 {% block content %}
     <section id="match-config-main" role="main" class="container-fluid">
-        <div class="row p-5">
-            <div class="col">  
-                <div class="d-flex justify-content-center">
-                    <div class="p-2"><img id="team_profile_logo" src="{{ MEDIA }}/{{ team_data.LOGO_PATH }}"></div>
-                    <div class="p-2 text-uppercase">
-                        <h1 id="team-name-title"><b>{{ team_data.TEAM }}</b></h1>
-                        <h3>Piala Menteri Besar Kedah</h3>
-                    </div> 
-                </div> 
+        <div class="row pt-5 px-5">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <div class="">Data Umum</div>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#match-config-modal">
+                                    <i class="fa-solid fa-wrench"></i>
+                                </button>
+                                <button type="button" class="btn btn-default" @click="saveMatchConfig">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="general-config-placeholder" class="mb-3">
+                            <table id="general-config-table" class="display compact hover"></table>
+                            <!-- <table id="result-config-table" class="display compact hover"></table>
+                            <table id="colors-config-table" class="display compact hover"></table> -->
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row pt-5 bg-white">
-            <!-- <hr class="mt-5">  -->
-            <div class="col align-self-center">   
-                <div class="row">
-                    <div class='col'>
-                        <div class="d-flex justify-content-center mb-3">
-                            <div class="p-2 pt-4 bd-highlight text-uppercase">
-                                <h1>Pegawai Pasukan</h1>
-                            </div> 
-                        </div> 
-                    </div>
-                </div>
-                <div class="row">
-                    <div class='col'>
-                        <div class="d-flex justify-content-center mb-3" style="gap: 20px;" id="list-team">
-                            <div class="card" style="width: 18rem;">
-                                <img src="{% static team_list.0.PROFILE_PIC_PATH %}" class="card-img-top">
-                                <div class="card-body">
-                                    <ul v-for="team in teamList" class="list-group list-group-flush">
-                                        <li class="list-group-item">[[ team.NAME ]]</li>
-                                        <li class="list-group-item">[[ team.POSITION ]]</li>
-                                        <li class="list-group-item">[[ team.IDENTITY_NUM ]]</li>
-                                    </ul>
-                                </div>
+        <div class="row px-5 pt-2">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <div class="">Data Pasukan Tuan Rumah</div>
+                            <div class="d-flex justify-content-between">
                             </div>
-                            <div class="card" style="width: 18rem;">
-                                <img src="{% static 'img/teams/kfa/123456789231/profile.jpg' %}" class="card-img-top">
-                                <div class="card-body">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Ismail Jo</li>
-                                        <li class="list-group-item">Programmer</li>
-                                        <li class="list-group-item">123456789231</li>
-                                    </ul>
-                                </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="general-config-placeholder" class="mb-3">
+                            <table id="home-first-eleven-config-table" class="display compact hover"></table>
+                            <table id="home-substitude-config-table" class="display compact hover"></table>
+                            <table id="home-not-eligible-config-table" class="display compact hover"></table>
+                            <table id="home-not-playing-config-table" class="display compact hover"></table>
+                            <table id="home-officials-config-table" class="display compact hover"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <div class="">Data Pasukan Tetamu</div>
+                            <div class="d-flex justify-content-between">
                             </div>
-                        </div> 
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="general-config-placeholder" class="mb-3">
+                            <table id="away-first-eleven-config-table" class="display compact hover"></table>
+                            <table id="away-substitude-config-table" class="display compact hover"></table>
+                            <table id="away-not-eligible-config-table" class="display compact hover"></table>
+                            <table id="away-not-playing-config-table" class="display compact hover"></table>
+                            <table id="away-officials-config-table" class="display compact hover"></table>
+                        </div>
                     </div>
                 </div>
-                <div class="row justify-content-center">
-                    <div class='col-4 mt-3 mb-3 d-flex justify-content-center'>
-                        <button type="button" class="btn btn-info" @click="generatePdf">Jana PDF</button>
-                    </div>
-                </div>
-
             </div>
         </div>
+        <div class="row px-5 pt-2">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <div class="">Data Delegasi</div>
+                            <div class="d-flex justify-content-between">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="general-config-placeholder" class="mb-3">
+                            <table id="delegation-config-table" class="display compact hover"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'modal/_add_rowdata.html' %}
     </section>
 {% endblock %}
 
 {% block match_config_script %}
-    
     <script>
-        
-        let team_list = "{{ team_list | safe }}".replace(/'/g, '"').replace(/\\/g, "/");
-        let team_data = "{{ team_data | safe }}".replace(/'/g, '"').replace(/\\/g, "/");
-        console.log(JSON.parse(team_data), team_list)
+        let serverData = "{{ server_data | safe }}".replace(/'/g, '"').replace(/\\/g, "/");
+
+        const csrfToken = '{{ csrf_token }}';
         $(document).ready( function() {
-            const app = new TeamProfile(JSON.parse(team_list), JSON.parse(team_data))
-            app.init()
+            const app = new MatchConfig(JSON.parse(serverData))
+            app.init(csrfToken)
         })
     </script>
 {% endblock %}

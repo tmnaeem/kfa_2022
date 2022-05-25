@@ -226,6 +226,8 @@ function TournamentConfig(listTournament){
                         this.tournamentDt.row(rowIdx).data(newData).draw();  
                     }else{
                         const selRowData = this.tournamentDt.rows( { selected: true } ).data()[0]
+                        this.tempStartDate = selRowData.START_TIME
+                        this.tempEndDate = selRowData.END_TIME
                         newData = {
                             TOURNAMENT_TITLE: this.tempTournamentName,
                             POSTER_PATH: selRowData.POSTER_PATH,

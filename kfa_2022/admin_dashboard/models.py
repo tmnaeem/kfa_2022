@@ -21,8 +21,7 @@ class MatchInformations(models.Model):
     MATCH_ID = models.UUIDField(db_column='MATCH_ID', unique=True)
     TOURNAMENT_ID = models.ForeignKey('AvailableTournaments', db_column='TOURNAMENT_ID', on_delete=models.CASCADE)
     MATCH_NUM = models.IntegerField(db_column='MATCH_NUM', default=0, unique=True)
-    START_TIME = models.DateTimeField(db_column='START_TIME', blank=True, null=True)
-    END_TIME = models.DateTimeField(db_column='END_TIME', blank=True, null=True)
+    DATE_TIME = models.DateTimeField(db_column='DATE_TIME', blank=True, null=True)
     MATCH_VENUE = models.CharField(db_column='MATCH_VENUE', max_length=255, blank=True, null=True)
     TEMPERATURE = models.FloatField(db_column='TEMPERATURE', blank=True, null=True)
 

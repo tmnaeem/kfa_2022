@@ -16,8 +16,11 @@ import datetime
 from django.utils.dateparse import parse_date
 from rest_framework.decorators import api_view
 import pandas as pd
+from django.contrib.auth.decorators import login_required
+
 # TODO : separate delete and update
 
+@login_required
 @api_view(['POST'])
 def extract_data_from_file(request):
     teams_data = request.data['teams_data']
@@ -32,6 +35,7 @@ def extract_data_from_file(request):
     return Response({"status": "success", "data": new_response}, status=status.HTTP_200_OK)
 
 class TeamItemViews(APIView):
+    @login_required
     def post(self, request):
         teams_data = json.loads(request.data['teams_data'])
         deleted_teams_data = json.loads(request.data['deleted_teams_data'])
@@ -123,6 +127,7 @@ class TeamItemViews(APIView):
         return Response({"status": "success", "data": new_response}, status=status.HTTP_200_OK)
 
 class TournamentsItemViews(APIView):
+    @login_required
     def post(self, request):
         teams_data = json.loads(request.data['tournaments_data'])
         deleted_teams_data = json.loads(request.data['deleted_tournaments_data'])
@@ -194,6 +199,7 @@ class TournamentsItemViews(APIView):
         return Response({"status": "success", "data": new_response}, status=status.HTTP_200_OK)
 
 class MatchItemViews(APIView):
+    @login_required
     def get(self, request):
         tournament_pid = request.GET.get('tournament_pid', None)
         match_data = list(MatchInformations.objects.filter(TOURNAMENT_ID=AvailableTournaments.objects.get(TOURNAMENT_ID=tournament_pid)).values())
@@ -212,7 +218,8 @@ class MatchItemViews(APIView):
             match['vs'] = f"{match['home']} VS {match['away']}"
 
         return Response({"status": "success", "data": match_data}, status=status.HTTP_200_OK)
-
+    
+    @login_required
     def post(self, request):      
         match_status = request.data['match_status']        
         general_data = request.data['general_data']
@@ -324,8 +331,6 @@ class MatchItemViews(APIView):
                     else:
                         return Response({"status": "error", "data": match_officials_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         else:  
-            # delegates_data = request.data['delegates_data']
-            # deleted_delegates_data = request.data['deleted_delegates_data']
             match_info = MatchInformations.objects.get(MATCH_ID=match_status)
 
             if len(general_data) != 0:
@@ -434,7 +439,8 @@ class MatchItemViews(APIView):
 
         # TODO: temporary solution
         return Response({"status": "success", "data": match_info.MATCH_ID}, status=status.HTTP_200_OK)
-
+    
+    @login_required
     def delete(self, request):
         deleted_matches = request.data['deleted_matches']
 
@@ -450,6 +456,7 @@ class MatchItemViews(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class TeamRegisteredItemViews(APIView):
+    @login_required
     def get(self, request):
         team_id = request.GET.get('team_id', None)
         match_id = request.GET.get('match_id', None)

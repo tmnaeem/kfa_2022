@@ -6,7 +6,9 @@ from client_dashboard.models import *
 from django.db.models import TextField
 from django.db.models.functions import Cast
 import json
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def team_config_page(request):
     # TODO: save image using different way
     list_team = list(AvailableTeams.objects.values())
@@ -23,6 +25,7 @@ def team_config_page(request):
     }
     return render(request, 'team_config.html', context)
 
+@login_required
 def team_profile_page(request, team_name):
     selected_team = list(AvailableTeams.objects.filter(TEAM=team_name).values())[0]
     all_players = list(TeamRegistered.objects.filter(TEAM_ID=selected_team['PID']).values())
@@ -44,6 +47,7 @@ def team_profile_page(request, team_name):
     }
     return render(request, 'team_profile.html', context)
 
+@login_required
 def tournament_config_page(request):
     list_tournament = list(AvailableTournaments.objects.values())
     for tournament in list_tournament:
@@ -58,6 +62,7 @@ def tournament_config_page(request):
     }
     return render(request, 'tournament_config.html', context)
 
+@login_required
 def match_report_page(request, tournament_title, match_id):
     tournament_related = AvailableTournaments.objects.get(TOURNAMENT_TITLE=tournament_title)
 

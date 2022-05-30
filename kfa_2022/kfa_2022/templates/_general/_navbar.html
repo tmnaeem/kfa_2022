@@ -14,30 +14,30 @@
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto mb-2 mb-lg-0" id="universal-navbar">
-                {% if location == 'home' %}
+                {% if location in '"home", "home_tournament_report", "home_about_us"' %}
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#" value="laporan">Laporan Perlawanan</a>
+                        <a class="nav-link {% if location == 'home_tournament_report' %}active{% endif %}" aria-current="page" href="{% url 'tournament_report' %}" value="laporan">Laporan Perlawanan</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Kejohanan
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            {% for tournament in tournaments_list %}
+                                <li><a class="dropdown-item" href="#">{{ tournament }}</a></li>
+                            {% endfor %}
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link {% if location == 'home_about_us' %}active{% endif %}" href="{% url 'about_us' %}">About</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link" href="#">Hubungi Kami</a>
-                    </li>
+                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'account_login' %}">Log Masuk</a>
                     </li>
-                {% elif location != 'home' %}
+                {% elif location in '"team_config", "team_profile", "tournament_config", "match_config"' %}
                     <li class="nav-item">
                         <a class="nav-link {% if location == 'team_config' %}active{% endif %}" aria-current="page" href="{% url 'team_config_page' %}" value="Konfigurasi">Konfigurasi Pasukan</a>
                     </li>

@@ -1,6 +1,7 @@
 from dataclasses import field
 from rest_framework import serializers
 from admin_dashboard.models import AvailableTeams, AvailableTournaments, TeamMatchGeneralInformation, TeamMatchPlayerList, TeamMatchOfficialList, MatchDelegatesList, MatchInformations
+from client_dashboard.models import TeamRegistered
 
 class TeamItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,4 +36,9 @@ class TeamMatchOfficialsListItemSerializer(serializers.ModelSerializer):
 class MatchDelegatesListItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = MatchDelegatesList
+        fields = ('__all__')
+        
+class TeamRegisteredItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamRegistered
         fields = ('__all__')

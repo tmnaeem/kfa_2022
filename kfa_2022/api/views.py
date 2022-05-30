@@ -3,7 +3,7 @@ from numpy import identity
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import TeamItemSerializer, TournamentItemSerializer, TeamMatchGeneralInfoItemSerializer, TeamMatchPlayerListItemSerializer, TeamMatchOfficialsListItemSerializer, MatchDelegatesListItemSerializer, MatchInfoItemSerializer
+from .serializers import TeamItemSerializer, TournamentItemSerializer, TeamMatchGeneralInfoItemSerializer, TeamMatchPlayerListItemSerializer, TeamMatchOfficialsListItemSerializer, MatchDelegatesListItemSerializer, MatchInfoItemSerializer, TeamRegisteredItemSerializer
 import json
 import os
 import uuid
@@ -14,7 +14,22 @@ from api import utils
 import shutil
 import datetime
 from django.utils.dateparse import parse_date
+from rest_framework.decorators import api_view
+import pandas as pd
 # TODO : separate delete and update
+
+@api_view(['POST'])
+def extract_data_from_file(request):
+    teams_data = request.data['teams_data']
+    try:
+        df = pd.read_csv(teams_data)
+    except:
+        df = pd.read_excel(teams_data)
+
+    df.loc[df.DESIGNATION == "PLAYER", "DESIGNATION"] = 1
+    
+    new_response = df.set_index('TEAM').groupby('TEAM').apply(lambda group: group.to_dict(orient='records')).to_dict()
+    return Response({"status": "success", "data": new_response}, status=status.HTTP_200_OK)
 
 class TeamItemViews(APIView):
     def post(self, request):
@@ -38,6 +53,7 @@ class TeamItemViews(APIView):
 
         data_create = []
         data_update = []
+        data_player = [] # only applicable for data create 
         for data in teams_data:
             # PID TEAM_ID TEAM LOGO_PATH SECRET_KEY IS_REGISTERED 
             # preparing file saving if any
@@ -62,16 +78,32 @@ class TeamItemViews(APIView):
             new_dict['LOGO_PATH'] =  new_path_image
 
             data_update.append(new_dict) if AvailableTeams.objects.filter(TEAM_ID=data['TEAM_ID']).exists() else data_create.append(new_dict)
-                
+
+            if 'playersData' in data: 
+                for row in data['playersData']:
+                    row['TEAM_ID'] = data['TEAM_ID']
+
+                data_player += data['playersData']
+               
         new_response = []
         if len(data_create) != 0:
-            serializer = TeamItemSerializer(data=data_create, many=True)
-            if serializer.is_valid():
-                serializer.save()
-                new_response = json.loads(json.dumps(serializer.data)) 
+            team_serializer = TeamItemSerializer(data=data_create, many=True)
+            if team_serializer.is_valid():
+                team_serializer.save()
+                new_response = json.loads(json.dumps(team_serializer.data)) 
             else:
-                print(serializer.errors)
-                return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"status": "error", "data": team_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if len(data_player) != 0:
+            for data in data_player:
+                existTeam = AvailableTeams.objects.get(TEAM_ID=data['TEAM_ID'])
+                data['TEAM_ID'] = existTeam.PID
+
+            player_serializer = TeamRegisteredItemSerializer(data=data_player, many=True)
+            if player_serializer.is_valid():
+                player_serializer.save()
+            else:
+                return Response({"status": "error", "data": player_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         if len(data_update) != 0:
             try:

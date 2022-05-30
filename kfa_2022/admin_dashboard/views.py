@@ -25,17 +25,22 @@ def team_config_page(request):
 
 def team_profile_page(request, team_name):
     selected_team = list(AvailableTeams.objects.filter(TEAM=team_name).values())[0]
-    all_player = list(TeamRegistered.objects.filter(TEAM_ID=selected_team['TEAM_ID']))
-
+    all_players = list(TeamRegistered.objects.filter(TEAM_ID=selected_team['PID']).values())
+    
     selected_team['TEAM_ID'] = str(selected_team['TEAM_ID'])
     selected_team['SECRET_KEY'] = str(selected_team['SECRET_KEY'])
     selected_team['IS_REGISTERED'] = int(selected_team['IS_REGISTERED'])
+
+    for player in all_players:
+        player['PROFILE_PIC_PATH'] = '' if player['PROFILE_PIC_PATH'] is None else player['PROFILE_PIC_PATH']
+        player['REGISTERED_BY'] = request.user.username if player['REGISTERED_BY'] is None else player['REGISTERED_BY']
+        player['LICENSE_KEY'] = '' if player['LICENSE_KEY'] is None else player['LICENSE_KEY'] # TODO: temporary usage, will replace with valid license key
     
     context = {
         'title' : 'Profil Pasukan',
         'location' : 'team_profile',
         'team_data' : selected_team,
-        'team_list' : all_player
+        'team_list' : all_players
     }
     return render(request, 'team_profile.html', context)
 

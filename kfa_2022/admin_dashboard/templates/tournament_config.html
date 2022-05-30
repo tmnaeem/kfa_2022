@@ -50,6 +50,9 @@
                                 <button type="button" class="btn btn-default" @click="navigateToMatchPage(true)">
                                     <i class="fa-solid fa-circle-plus"></i>
                                 </button>
+                                <button v-if="deletedMatches.length > 0" type="button" class="btn btn-default" @click="saveMatchDeletionConfig">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                </button>
                             </div>
                         </div>
                     </div>

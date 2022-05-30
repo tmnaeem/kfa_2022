@@ -12,76 +12,154 @@
  
 {% block content %}
     <section id="match-config-main" role="main" class="container-fluid">
-        <div class="row p-5">
-            <div class="col">  
-                <div class="d-flex justify-content-center">
-                    <div class="p-2"><img id="team_profile_logo" src="{{ MEDIA }}/{{ team_data.LOGO_PATH }}"></div>
-                    <div class="p-2 text-uppercase">
-                        <h1 id="team-name-title"><b>{{ team_data.TEAM }}</b></h1>
-                        <h3>Piala Menteri Besar Kedah</h3>
-                    </div> 
-                </div> 
+        <div class="row pt-5 px-5">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <div class="">Data Umum</div>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-default" @click="editRowToTable(true)">
+                                    <i class="fa-solid fa-wrench"></i>
+                                </button>
+                                <button type="button" class="btn btn-default" :disabled="selectedFirstTeam == null || selectedSecondTeam == null" @click="saveMatchConfig">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="general-config-placeholder" class="mb-3">
+                            <table id="general-config-table" class="display compact hover"></table>
+                        </div>
+                        <div id="general-config-placeholder" class="mb-3">
+                            <table id="result-config-table" class="display compact hover"></table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row pt-5 bg-white">
-            <!-- <hr class="mt-5">  -->
-            <div class="col align-self-center">   
-                <div class="row">
-                    <div class='col'>
-                        <div class="d-flex justify-content-center mb-3">
-                            <div class="p-2 pt-4 bd-highlight text-uppercase">
-                                <h1>Pegawai Pasukan</h1>
-                            </div> 
-                        </div> 
-                    </div>
-                </div>
-                <div class="row">
-                    <div class='col'>
-                        <div class="d-flex justify-content-center mb-3" style="gap: 20px;" id="list-team">
-                            <div class="card" style="width: 18rem;">
-                                <img src="{% static team_list.0.PROFILE_PIC_PATH %}" class="card-img-top">
-                                <div class="card-body">
-                                    <ul v-for="team in teamList" class="list-group list-group-flush">
-                                        <li class="list-group-item">[[ team.NAME ]]</li>
-                                        <li class="list-group-item">[[ team.POSITION ]]</li>
-                                        <li class="list-group-item">[[ team.IDENTITY_NUM ]]</li>
-                                    </ul>
-                                </div>
+        <div class="row px-5 pt-2">
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <div class="">Data Pasukan Tuan Rumah</div>
+                            <div class="d-flex justify-content-between">
+                                <button v-if="currentTableSelection == 'home-team-config-table' || currentTableSelection == 'home-officials-config-table' || currentTableSelection == 'home-team-colors-config-table'" type="button" class="btn btn-default" @click="editRowToTable(false)">
+                                    <i class="fa-solid fa-wrench"></i>
+                                </button>
+                                <select v-if="matchId == 'new_match'" class="form-select" aria-label="Default select example" v-model="selectedFirstTeam">
+                                    <option v-for="team in teamsData" v-bind:value="team">
+                                        <template>[[ team.TEAM ]]</template>
+                                    </option>
+                                    <option v-if="selectedFirstTeam != null" v-bind:value="null" style="background-color: rgb(219, 219, 219);">
+                                        <template>Clear</template>
+                                    </option>
+                                </select>
+                                <h6 v-else class="card-subtitle mt-1 text-muted">
+                                    <template v-if="selectedFirstTeam != null">[[ selectedFirstTeam.TEAM_ID__TEAM ]]</template>
+                                </h6>
                             </div>
-                            <div class="card" style="width: 18rem;">
-                                <img src="{% static 'img/teams/kfa/123456789231/profile.jpg' %}" class="card-img-top">
-                                <div class="card-body">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Ismail Jo</li>
-                                        <li class="list-group-item">Programmer</li>
-                                        <li class="list-group-item">123456789231</li>
-                                    </ul>
-                                </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="home-team-config-placeholder" class="mb-3">
+                            <h6 class="card-subtitle mb-2 text-muted">Pasukan Tuan Rumah</h6>
+                            <table id="home-team-config-table" class="display compact hover"></table>
+                        </div>
+                        <div id="home-official-config-placeholder" class="mb-3">
+                            <h6 class="card-subtitle mb-2 mt-4 text-muted">Pegawai Tuan Rumah</h6>
+                            <table id="home-officials-config-table" class="display compact hover"></table>
+                        </div>
+                        <div id="home-team-colors-config-placeholder" class="mb-3">
+                            <h6 class="card-subtitle mb-2 mt-4 text-muted">Warna Kit Tuan Rumah</h6>
+                            <table id="home-team-colors-config-table" class="display compact hover"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <div class="">Data Pasukan Tetamu</div>
+                            <div class="d-flex justify-content-between">
+                                <button v-if="currentTableSelection == 'away-team-config-table' || currentTableSelection == 'away-officials-config-table' || currentTableSelection == 'away-team-colors-config-table'" type="button" class="btn btn-default" @click="editRowToTable(false)">
+                                    <i class="fa-solid fa-wrench"></i>
+                                </button>
+                                <select v-if="matchId == 'new_match'" class="form-select" aria-label="Default select example" v-model="selectedSecondTeam">
+                                    <option v-for="team in teamsData" v-bind:value="team">
+                                        <template>[[ team.TEAM ]]</template>
+                                    </option>
+                                    <option v-if="selectedSecondTeam != null" v-bind:value="null" style="background-color: rgb(219, 219, 219);">
+                                        <template>Clear</template>
+                                    </option>
+                                </select>
+                                <h6 v-else class="card-subtitle mt-1 text-muted">
+                                    <template v-if="selectedSecondTeam != null">[[ selectedSecondTeam.TEAM_ID__TEAM ]]</template>
+                                </h6>
                             </div>
-                        </div> 
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="away-team-config-placeholder" class="mb-3">
+                            <h6 class="card-subtitle mb-2 text-muted">Pasukan Tetamu</h6>
+                            <table id="away-team-config-table" class="display compact hover"></table>
+                        </div>
+                        <div id="away-official-config-placeholder" class="mb-3">
+                            <h6 class="card-subtitle mb-2 mt-4 text-muted">Pegawai Tetamu</h6>
+                            <table id="away-officials-config-table" class="display compact hover"></table>
+                        </div>
+                        <div id="away-team-colors-config-placeholder" class="mb-3">
+                            <h6 class="card-subtitle mb-2 mt-4 text-muted">Warna Kit Tetamu</h6>
+                            <table id="away-team-colors-config-table" class="display compact hover"></table>
+                        </div>
                     </div>
                 </div>
-                <div class="row justify-content-center">
-                    <div class='col-4 mt-3 mb-3 d-flex justify-content-center'>
-                        <button type="button" class="btn btn-info" @click="generatePdf">Jana PDF</button>
-                    </div>
-                </div>
-
             </div>
         </div>
+        <div class="row px-5 pt-2 pb-5">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <div class="">Data Perwakilan</div>
+                            <div class="d-flex justify-content-between">
+                                <button v-if="currentTableSelection == 'delegates-config-table'" type="button" class="btn btn-default" @click="deleteRowSelected">
+                                    <i class="fa-solid fa-trash-can text-danger"></i>
+                                </button>
+                                <button v-if="currentTableSelection == 'delegates-config-table'" type="button" class="btn btn-default" @click="editRowToTable(false)">
+                                    <i class="fa-solid fa-wrench"></i>
+                                </button>
+                                <button type="button" class="btn btn-default" @click="openAddTable">
+                                    <i class="fa-solid fa-circle-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="delegates-config-placeholder" class="mb-3">
+                            <table id="delegates-config-table" class="display compact hover"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'modal/_add_rowdata.html' %}
     </section>
 {% endblock %}
 
 {% block match_config_script %}
-    
     <script>
+        const serverData = JSON.parse("{{ server_data | safe }}".replace(/'/g, '"').replace(/\\/g, "/"))
+        const teamsData = JSON.parse("{{ teams_data | safe }}".replace(/'/g, '"').replace(/\\/g, "/"))
+        const delegatesData = JSON.parse("{{ delegatesData | safe }}".replace(/'/g, '"').replace(/\\/g, "/"))
         
-        let team_list = "{{ team_list | safe }}".replace(/'/g, '"').replace(/\\/g, "/");
-        let team_data = "{{ team_data | safe }}".replace(/'/g, '"').replace(/\\/g, "/");
-        console.log(JSON.parse(team_data), team_list)
+        const csrfToken = '{{ csrf_token }}';
         $(document).ready( function() {
-            const app = new TeamProfile(JSON.parse(team_list), JSON.parse(team_data))
-            app.init()
+            const app = new MatchConfig(serverData, teamsData, delegatesData, "{{ match_id }}", "{{ tournament_title }}")
+            app.init(csrfToken)
         })
     </script>
 {% endblock %}

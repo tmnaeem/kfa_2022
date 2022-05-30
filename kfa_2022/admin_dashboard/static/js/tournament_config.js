@@ -119,11 +119,11 @@ function TournamentConfig(listTournament){
                     // match table related
                     matchDt: null,
                     matchColumns: [ { data: 'vs', title: 'Perlawanan' },
-                                    { data: 'START_TIME', title: 'Tarikh Mula' },
-                                    { data: 'END_TIME', title: 'Tarikh Akhir' },
+                                    { data: 'DATE_TIME', title: 'Tarikh dan Masa' },
                                     { data: 'MATCH_VENUE', title: 'Tempat' }],
                     matchRowData: null,
                     matchSelectionActive: false,
+                    deletedMatches: []
                 }
             },
             watch: {
@@ -226,6 +226,8 @@ function TournamentConfig(listTournament){
                         this.tournamentDt.row(rowIdx).data(newData).draw();  
                     }else{
                         const selRowData = this.tournamentDt.rows( { selected: true } ).data()[0]
+                        this.tempStartDate = selRowData.START_TIME
+                        this.tempEndDate = selRowData.END_TIME
                         newData = {
                             TOURNAMENT_TITLE: this.tempTournamentName,
                             POSTER_PATH: selRowData.POSTER_PATH,
@@ -241,10 +243,17 @@ function TournamentConfig(listTournament){
                     }
                 }, 
                 deleteRowSelected: function(whichTable){
-                    const selRowData = this.tournamentDt.rows( { selected: true } ).data()[0]
-                    if(selRowData.saveStatus == this.saveStatusDict.saved) this.deletedRows.push(selRowData.TOURNAMENT_ID)
-                    this.tournamentDt.rows( '.selected' ).remove().draw();
-                    this.onDeSelectRowTable()
+                    if(whichTable == this.whichTable.tournament){
+                        const selRowData = this.tournamentDt.rows( { selected: true } ).data()[0]
+                        if(selRowData.saveStatus == this.saveStatusDict.saved) this.deletedRows.push(selRowData.TOURNAMENT_ID)
+                        this.tournamentDt.rows( '.selected' ).remove().draw();
+                        this.onDeSelectRowTable()
+                    }else if(whichTable == this.whichTable.match){
+                        const selRowData = this.matchDt.rows( { selected: true } ).data()[0]
+                        this.deletedMatches.push(selRowData.MATCH_ID)
+                        this.matchDt.rows( '.selected' ).remove().draw();
+                        this.onDeSelectMatchRowTable()
+                    }
                 },
                 addRowToTable: function(){
                     const new_uuid = uuidv4()
@@ -318,6 +327,25 @@ function TournamentConfig(listTournament){
                         .catch(err => {
                             console.log(err)
                             this.toastMessage('error', 'Tidak Berjaya Dikemas kini', 'Data Kejohanan gagal dikemas kini ke pelayan')
+                        })
+                    }
+                },
+                saveMatchDeletionConfig: function(){
+                    let self = this;
+                
+                    if(this.deletedMatches.length > 0){
+                        axios({
+                            method: 'delete',
+                            url: '/api/delete_match/',
+                            headers: {"X-CSRFToken": csrfToken},
+                            data: {
+                                deleted_matches: this.deletedMatches
+                            }
+                        }).then(response => {
+                            this.toastMessage('success', 'Berjaya dipadam', 'Data Perlawanan berjaya dipadam dari pelayan')
+                        })
+                        .catch(err => {
+                            this.toastMessage('error', 'Tidak Berjaya dipadam', 'Data Perlawanan gagal dipadam dari pelayan')
                         })
                     }
                 },

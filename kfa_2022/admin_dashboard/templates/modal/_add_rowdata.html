@@ -76,3 +76,221 @@
         </div>
     </div>
 </div>
+
+<div v-if="pageLocation == 'match'" class="modal fade" id="match-general-config-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sunting Data Umum Perlawanan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3 row">
+                        <label for="timeFrame" class="col-sm-2 col-form-label">Tarikh dan Masa</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" name="datefilter" id="timeFrame" v-model="selectedTimeFrame" />
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="inputDurationMatch" class="col-sm-2 col-form-label" required>Durasi</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="inputDurationMatch" v-model="tempDurationMatch" >
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="inputVenueMatch" class="col-sm-2 col-form-label" required>Tempat</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputVenueMatch" v-model="tempVenueMatch" >
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="inputWeatherMatch" class="col-sm-2 col-form-label" required>Cuaca</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputWeatherMatch" v-model="tempWeatherMatch" >
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="inputTemperatureMatch" class="col-sm-2 col-form-label" required>Suhu</label>
+                        <div class="col-sm-10">
+                            <input type="number" step="0.01" class="form-control" id="inputTemperatureMatch" v-model="tempTemperatureMatch" >
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="inputAttendanceMatch" class="col-sm-2 col-form-label" required>Kehadiran</label>
+                        <div class="col-sm-10">
+                            <input type="number" step="1" class="form-control" id="inputAttendanceMatch" v-model="tempAttendanceMatch" >
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeModal">Close</button>
+                <button type="button" class="btn btn-primary" @click="updateRowToTable(true)">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div v-if="pageLocation == 'match'" class="modal fade" id="match-other-config-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sunting Data Berkaitan Perlawanan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal"></button>
+            </div>
+            <div class="modal-body">
+                <form v-if="currentTableSelection == 'home-team-config-table' || currentTableSelection == 'away-team-config-table'">
+                    <div class="mb-3 row">
+                        <label for="timeGoal" class="col-sm-2 col-form-label">Minit Goal</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" id="timeGoal" v-model="selectedTimeGoal" />
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="timeYellowCard" class="col-sm-2 col-form-label">Minit Kad Kuning</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" id="timeYellowCard" v-model="selectedTimeYellowCard" />
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="timeRedCard" class="col-sm-2 col-form-label">Minit Kad Merah</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" id="timeRedCard" v-model="selectedTimeRedCard" />
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="timeSwitchPlayer" class="col-sm-2 col-form-label">Minit Pertukaran Pemain</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" id="timeSwitchPlayer" v-model="selectedTimeSwitchPlayer" />
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="isFirstEleven" class="col-sm-2 col-form-label">Pemain Kesebelasan Utama?</label>
+                        <div class="col-sm-10">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="isFirstEleven" v-model="selectedIsFirstEleven">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="isSubstitute" class="col-sm-2 col-form-label">Pemain Simpanan?</label>
+                        <div class="col-sm-10">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="isSubstitute" v-model="selectedIsSubstitute">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="isCaptain" class="col-sm-2 col-form-label">Ketua Pasukan?</label>
+                        <div class="col-sm-10">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="isCaptain" v-model="selectedIsCaptain">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="isPlaying" class="col-sm-2 col-form-label">Bermain?</label>
+                        <div class="col-sm-10">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="isPlaying" v-model="selectedIsPlaying">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="isEligible" class="col-sm-2 col-form-label">Layak?</label>
+                        <div class="col-sm-10">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="isEligible" v-model="selectedIsEligible">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <form v-if="currentTableSelection == 'home-officials-config-table' || currentTableSelection == 'away-officials-config-table'">
+                    <div class="mb-3 row">
+                        <label for="isAttended" class="col-sm-2 col-form-label">Hadir?</label>
+                        <div class="col-sm-10">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="isAttended" v-model="tempOfficialAttendance">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeModal">Close</button>
+                <button v-if="onEditMatchTableConfig" type="button" class="btn btn-primary" @click="updateRowToTable(false)">Update</button> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div v-if="pageLocation == 'match'" class="modal fade" id="match-colors-config-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sunting Data Warna Pasukan Perlawanan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3 row">
+                        <label for="inputPrimaryColor" class="col-sm-2 col-form-label">Warna Pertama</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" id="inputPrimaryColor" v-model="tempFirstColor" />
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="inputSecondaryColor" class="col-sm-2 col-form-label">Warna Kedua</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" id="inputSecondaryColor" v-model="tempSecondColor" />
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="inputTertiaryColor" class="col-sm-2 col-form-label">Warna Ketiga</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" id="inputTertiaryColor" v-model="tempThirdColor" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeModal">Close</button>
+                <button v-if="onEditMatchTableConfig" type="button" class="btn btn-primary" @click="updateRowToTable(false)">Update</button> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div v-if="pageLocation == 'match'" class="modal fade" id="match-delegates-config-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sunting Data Berkaitan Perlawanan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3 row">
+                        <label for="inputDelegateDesignation" class="col-sm-2 col-form-label" required>Jawatan</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputDelegateDesignation" v-model="tempDelegateDesignation" >
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="inputDelegateName" class="col-sm-2 col-form-label" required>Nama</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputDelegateName" v-model="tempDelegateName" >
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeModal">Close</button>
+                <button v-if="onEditMatchTableConfig" type="button" class="btn btn-primary" @click="updateRowToTable(false)">Update</button>
+                <button v-else type="button" class="btn btn-primary" @click="addRowToTable">Add</button>
+            </div>
+        </div>
+    </div>
+</div>

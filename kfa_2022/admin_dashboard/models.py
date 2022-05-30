@@ -21,10 +21,12 @@ class MatchInformations(models.Model):
     MATCH_ID = models.UUIDField(db_column='MATCH_ID', unique=True)
     TOURNAMENT_ID = models.ForeignKey('AvailableTournaments', db_column='TOURNAMENT_ID', on_delete=models.CASCADE)
     MATCH_NUM = models.IntegerField(db_column='MATCH_NUM', default=0, unique=True)
-    START_TIME = models.DateTimeField(db_column='START_TIME', blank=True, null=True)
-    END_TIME = models.DateTimeField(db_column='END_TIME', blank=True, null=True)
+    DATE_TIME = models.DateTimeField(db_column='DATE_TIME', blank=True, null=True)
     MATCH_VENUE = models.CharField(db_column='MATCH_VENUE', max_length=255, blank=True, null=True)
     TEMPERATURE = models.FloatField(db_column='TEMPERATURE', blank=True, null=True)
+    WEATHER = models.CharField(db_column='WEATHER', max_length=255, blank=True, null=True)
+    DURATION = models.IntegerField(db_column='DURATION', default=0, blank=True, null=True)
+    ATTENDANCE = models.IntegerField(db_column='ATTENDANCE', default=0, blank=True, null=True)
 
 class TeamMatchGeneralInformation(models.Model):
     PID = models.AutoField(db_column='PID', primary_key=True) 
@@ -48,9 +50,12 @@ class TeamMatchPlayerList(models.Model):
     ATTENDANCE = models.BooleanField(db_column='ATTENDANCE', default=False)
     IS_FIRST_ELEVEN = models.BooleanField(db_column='IS_FIRST_ELEVEN', default=False)
     IS_SUBSTITUTE = models.BooleanField(db_column='IS_SUBSTITUTE', default=True)
-    SCORE_COUNT = models.IntegerField(db_column='SCORE_COUNT', default=0, blank=True, null=True)
-    PENALTY_CARDS = models.JSONField(db_column='PENALTY_CARDS', default=dict)
+    SCORE_LIST = models.JSONField(db_column='SCORE_LIST', default=dict, blank=True, null=True)
+    PENALTY_CARDS = models.JSONField(db_column='PENALTY_CARDS', default=dict, blank=True, null=True)
+    SUBS_TIME = models.CharField(db_column='SUBS_TIME', max_length=255, blank=True, null=True)
     IS_CAPTAIN = models.BooleanField(db_column='IS_CAPTAIN', default=False)
+    IS_PLAYING = models.BooleanField(db_column='IS_PLAYING', default=False)
+    IS_ELIGIBLE = models.BooleanField(db_column='IS_ELIGIBLE', default=False)
 
 class MatchDelegatesList(models.Model):
     PID = models.AutoField(db_column='PID', primary_key=True)
